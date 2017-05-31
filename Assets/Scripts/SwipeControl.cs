@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class SwipeControl : MonoBehaviour
 {
@@ -25,8 +26,9 @@ public class SwipeControl : MonoBehaviour
     public bool isKickedPlayer = false; //flag to check if the player has kicked the ball
     public bool isKickedOpponent = false; //flag to check if the opponent has kicked the ball
     public bool triggered = false;
-
-
+    public float fontSize = 27; //preferred fontsize for this screen size
+    public int value = 20;  //factor value for changing fontsize if needed
+    public GUISkin skin;
 
     void Start()
     {
@@ -34,6 +36,7 @@ public class SwipeControl : MonoBehaviour
         dragDistance = Screen.height * 20 / 100; //20% of the screen should be swiped to shoot
         Physics.gravity = new Vector3(0, -20, 0); //reset the gravity of the ball to 20
         footballPos = transform.position;  //store the initial position of the football
+        fontSize = Mathf.Min(Screen.width, Screen.height) / value;
     }
 
     // Update is called once per frame
@@ -194,14 +197,15 @@ public class SwipeControl : MonoBehaviour
 
     void OnGUI()
     {
-        GUIStyle myStyle = new GUIStyle(GUI.skin.GetStyle("label"));
-        myStyle.fontSize = 16;
-
+        GUI.skin = skin;   //use the custom GUISkin
+        skin.button.fontSize = (int)fontSize; //set the fontsize of the button 
+        skin.box.fontSize = (int)fontSize; //set the font size of box
+        skin.label.fontSize = (int)fontSize;
         //check if game is not over, if so, display the score
         if (!isGameOver)
         {
-            GUI.Label(new Rect(10, 10, Screen.width / 5, Screen.height / 6), "PLAYER: " + (scorePlayer).ToString(), myStyle); //display player's score
-            GUI.Label(new Rect(Screen.width - (Screen.width / 6), 10, Screen.width / 6, Screen.height / 6), "OPPONENT: " + (scoreOpponent.ToString()), myStyle);   //display opponent's score
+            GUI.Label(new Rect(10, 10, Screen.width / 5, Screen.height / 6), "PLAYER: " + (scorePlayer).ToString()); //display player's score
+            GUI.Label(new Rect(Screen.width - (Screen.width / 6), 10, Screen.width / 6, Screen.height / 6), "OPPONENT: " + (scoreOpponent.ToString()));   //display opponent's score
         }
         else
         {
@@ -215,13 +219,14 @@ public class SwipeControl : MonoBehaviour
             //restart the game on click
             if (GUI.Button(new Rect(Screen.width / 4 + 10, Screen.height / 4 + Screen.height / 10 + 10, Screen.width / 2 - 20, Screen.height / 10), "RESTART"))
             {
-                Application.LoadLevel(Application.loadedLevel);
+                Scene scene = SceneManager.GetActiveScene();
+                SceneManager.LoadScene(scene.name);
             }
 
             //load the main menu, which as of now has not been created
             if (GUI.Button(new Rect(Screen.width / 4 + 10, Screen.height / 4 + 2 * Screen.height / 10 + 10, Screen.width / 2 - 20, Screen.height / 10), "MAIN MENU"))
             {
-                Application.LoadLevel(1);
+                SceneManager.LoadScene("MainMenu");
             }
 
             //exit the game
