@@ -200,7 +200,7 @@ public class SwipeControl : MonoBehaviour
         GUI.skin = skin;   //use the custom GUISkin
         skin.button.fontSize = (int)fontSize; //set the fontsize of the button 
         skin.box.fontSize = (int)fontSize; //set the font size of box
-        skin.label.fontSize = (int)fontSize;
+        skin.label.fontSize = (int)(fontSize / 2);
         //check if game is not over, if so, display the score
         if (!isGameOver)
         {
